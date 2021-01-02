@@ -10,4 +10,4 @@ print(theta_0)
 
 km = input("Enter your mileage: ")
 
-print(theta_0[0] +( theta_1[0] * float(km)) )
+print(theta_0[0] + theta_1[0] * float(km))
