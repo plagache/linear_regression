@@ -34,11 +34,14 @@ for i in range(0, 1):
     calc = (estimate_price - price) * km
     print(f' estimate_price {estimate_price}')
     print(f' calc {calc}')
-
     learning_rate = 0.3
-
-    theta_0 = learning_rate * ((1 / (estimate_price.size)) * calc2.sum())
-    theta_1 = learning_rate * ((1 / (estimate_price.size)) * calc.sum())
+    for km, price in zip(km, price):
+        dt0 +=(theta_1 * km + theta_0) - price
+        dt1 +=((theta_1 * km + theta_0) - price) * km
+    theta_0 -= dt0 / len(km) * learning_rate
+    theta_1 -= dt1 / len(km) * learning_rate
+    #theta_0 = learning_rate * ((1 / (estimate_price.size)) * calc2.sum())
+    #theta_1 = learning_rate * ((1 / (estimate_price.size)) * calc.sum())
     print(f'nbr = {estimate_price.size}')
     print(f'new theta0 = {theta_0}')
     print(f'new theta1 = {theta_1}')
