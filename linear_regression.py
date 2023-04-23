@@ -71,7 +71,7 @@ if __name__ == "__main__":
 
         save_thetas(theta_0, theta_1)
 
-    # display(theta_0, theta_1, norme_km, norme_price, n_km_min, n_km_max)
+    display(theta_0, theta_1, norme_km, norme_price, n_km_min, n_km_max)
 
     # Denormalize thetas
     theta_0 = get_denormalized_value(theta_0, price_min, price_max)
