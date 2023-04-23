@@ -1,6 +1,5 @@
 # import display_data
 import matplotlib.pyplot as plt
-import pandas as pd
 import numpy as np
 
 def display(theta_0, theta_1, km, price, km_min, km_max):
@@ -17,8 +16,8 @@ def display(theta_0, theta_1, km, price, km_min, km_max):
     
     # add some Title to the display
     model = np.polyfit(km, price, 1)
-    # print(model)
-    # plt.plot(linear, linear * model[0] + model[1], label='model')
+    print(f'ours t0:{theta_0} t1:{theta_1}\nmodel t0:{model[1]} t1:{model[0]}')
+    plt.plot(linear, linear * model[0] + model[1], label='model')
     plt.xlabel('km')
     plt.ylabel('price')
     plt.legend()

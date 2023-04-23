@@ -52,11 +52,12 @@ if __name__ == "__main__":
     theta_f = pd.DataFrame(theta)
     theta_0 = theta_f["theta0"].values[-1]
     theta_1 = theta_f["theta1"].values[-1]
+    # theta_0 = get_normalized_value(theta_0, price_min, price_max)
 
     # Perform linear reg a certain number (range)
-    for i in range(0, 10000):
+    for i in range(0, 1000):
 
-        learning_rate = 0.03
+        learning_rate = 0.3
         dt0 = 0
         dt1 = 0
 
@@ -70,4 +71,9 @@ if __name__ == "__main__":
 
         save_thetas(theta_0, theta_1)
 
-    display(theta_0, theta_1, norme_km, norme_price, n_km_min, n_km_max)
+    # display(theta_0, theta_1, norme_km, norme_price, n_km_min, n_km_max)
+
+    # Denormalize thetas
+    theta_0 = get_denormalized_value(theta_0, price_min, price_max)
+    theta_1 = (prices.values[0] - theta_0) / kms.values[0]
+    display(theta_0, theta_1, kms, prices, km_min, km_max)
