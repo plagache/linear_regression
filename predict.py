@@ -1,13 +1,12 @@
 #! /usr/bin/python3
-
 import pandas  as pd
+from linear_regression import estimate_price
 
 theta = pd.read_csv('theta.csv')
 theta_f = pd.DataFrame(theta)
-theta_0 = theta_f.loc[theta_f.index[-1], 'theta0']
-theta_1 = theta_f.loc[theta_f.index[-1], "theta1"]
-print(theta_0)
+theta_0 = theta_f["theta0"].values[-1]
+theta_1 = theta_f["theta1"].values[-1]
 
-km = input("Enter your mileage: ")
+km = float(input("Enter your mileage: "))
 
-print(theta_0[0] +( theta_1[0] * float(km)) )
+print(estimate_price(km, theta_0, theta_1))
