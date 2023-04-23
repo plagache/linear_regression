@@ -23,50 +23,51 @@ def save_thetas(theta_0, theta_1):
     f.write("%f, %f\n" % (theta_0, theta_1))
     f.close()
 
-# Data import
-data = pd.read_csv('data.csv')
-df = pd.DataFrame(data)
+if __name__ == "__main__":
+    # Data import
+    data = pd.read_csv('data.csv')
+    df = pd.DataFrame(data)
 
-kms = df["km"]
-km_min = kms.min()
-km_max = kms.max()
+    kms = df["km"]
+    km_min = kms.min()
+    km_max = kms.max()
 
-prices = df["price"]
-price_max = prices.max()
-price_min = prices.min()
+    prices = df["price"]
+    price_max = prices.max()
+    price_min = prices.min()
 
-df["normalized_price"] = get_normalized_value(prices.tolist(), price_min, price_max)
-df["normalized_km"] = get_normalized_value(kms.tolist(), km_min, km_max)
-norme_price = df["normalized_price"]
-# df["renormalized_price"] = get_denormalized_list(norme_price.tolist(), price_min, price_max)
-norme_km = df["normalized_km"]
-# df["renormalized_km"] = get_denormalized_list(norme_km.tolist(), km_min, km_max)
-n_km_min = norme_km.min()
-n_km_max = norme_km.max()
+    df["normalized_price"] = get_normalized_value(prices.tolist(), price_min, price_max)
+    df["normalized_km"] = get_normalized_value(kms.tolist(), km_min, km_max)
+    norme_price = df["normalized_price"]
+    # df["renormalized_price"] = get_denormalized_list(norme_price.tolist(), price_min, price_max)
+    norme_km = df["normalized_km"]
+    # df["renormalized_km"] = get_denormalized_list(norme_km.tolist(), km_min, km_max)
+    n_km_min = norme_km.min()
+    n_km_max = norme_km.max()
 
-sample_size = kms.index.stop
+    sample_size = kms.index.stop
 
-# Theta import
-theta = pd.read_csv('theta.csv')
-theta_f = pd.DataFrame(theta)
-theta_0 = theta_f["theta0"].values[-1]
-theta_1 = theta_f["theta1"].values[-1]
+    # Theta import
+    theta = pd.read_csv('theta.csv')
+    theta_f = pd.DataFrame(theta)
+    theta_0 = theta_f["theta0"].values[-1]
+    theta_1 = theta_f["theta1"].values[-1]
 
-# Perform linear reg a certain number (range)
-for i in range(0, 10000):
+    # Perform linear reg a certain number (range)
+    for i in range(0, 10000):
 
-    learning_rate = 0.03
-    dt0 = 0
-    dt1 = 0
+        learning_rate = 0.03
+        dt0 = 0
+        dt1 = 0
 
-    for km, price in zip(norme_km, norme_price):
-        estimated_price = estimate_price(km, theta_0, theta_1)
-        dt0 += estimated_price - price
-        dt1 += (estimated_price - price) * km
+        for km, price in zip(norme_km, norme_price):
+            estimated_price = estimate_price(km, theta_0, theta_1)
+            dt0 += estimated_price - price
+            dt1 += (estimated_price - price) * km
 
-    theta_0 -= learning_rate * dt0 / sample_size
-    theta_1 -= learning_rate * dt1 / sample_size
+        theta_0 -= learning_rate * dt0 / sample_size
+        theta_1 -= learning_rate * dt1 / sample_size
 
-    save_thetas(theta_0, theta_1)
+        save_thetas(theta_0, theta_1)
 
-display(theta_0, theta_1, norme_km, norme_price, n_km_min, n_km_max)
+    display(theta_0, theta_1, norme_km, norme_price, n_km_min, n_km_max)
