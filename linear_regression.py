@@ -45,7 +45,7 @@ if __name__ == "__main__":
     n_km_min = norme_km.min()
     n_km_max = norme_km.max()
 
-    sample_size = kms.index.stop
+    sample_size = len(kms.values.tolist())
 
     # Theta import
     theta = pd.read_csv('theta.csv')
@@ -74,6 +74,24 @@ if __name__ == "__main__":
     display(theta_0, theta_1, norme_km, norme_price, n_km_min, n_km_max)
 
     # Denormalize thetas
-    theta_0 = get_denormalized_value(theta_0, price_min, price_max)
-    theta_1 = (prices.values[0] - theta_0) / kms.values[0]
+
+    # Some value for kms
+    x0, x1 = kms.values[0], kms.values[1]
+
+    # Price at x0
+    y0 = prices.values[0]
+
+    # Corresponding normalized value for kms
+    x0n, x1n = norme_km.values[0], norme_km.values[1]
+
+    # Corresponding normalized value for price using the normalized parameters
+    y0n, y1n = estimate_price(x0n, theta_0, theta_1), estimate_price(x1n, theta_0, theta_1)
+
+    # Denormalized value of estimation
+    y0r, y1r = get_denormalized_value(y0n, price_min, price_max), get_denormalized_value(y1n, price_min, price_max)
+
+    # Simplified equation from jon nimrod
+    theta_0 =  (y0r * x1 - x0 * y1r) / (x1 - x0)
+    theta_1 = (y0 - theta_0) / x0
+
     display(theta_0, theta_1, kms, prices, km_min, km_max)
