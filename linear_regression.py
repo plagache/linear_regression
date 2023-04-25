@@ -75,10 +75,13 @@ for i in range(0, 100):
     frames.append(image)
 
 
-imageio.mimsave('./example.gif', frames, duration = 200, loop = 1)
 
-display(theta_0, theta_1, n_kms, n_prices, n_km_min, n_km_max)
+# display(theta_0, theta_1, n_kms, n_prices, n_km_min, n_km_max)
 
 nt0, nt1 = denormalize_thetas(theta_0, theta_1)
 
 display(nt0, nt1, kms, prices, km_min, km_max)
+
+image = imageio.v2.imread(f'./img/img_final.png')
+frames.append(image)
+imageio.mimsave('./example.gif', frames, duration = 50)

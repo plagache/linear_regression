@@ -4,6 +4,8 @@ import numpy as np
 
 def display(theta_0, theta_1, km, price, km_min, km_max):
     
+    fig, ax = plt.subplots()
+    ax.set_ylim(ymin=price.min() - 1000, ymax=price.max() + 1000)
     # print(theta_0, km_max, km)
     plt.style.use('dark_background')
     nbr_point_tracer = 2
@@ -21,6 +23,7 @@ def display(theta_0, theta_1, km, price, km_min, km_max):
     plt.xlabel('km')
     plt.ylabel('price')
     plt.legend()
+    plt.savefig(f'./img/img_final.png', transparent = False)
     plt.show()
 
 def save_fig(t0, t1, df, iteration):
@@ -30,7 +33,8 @@ def save_fig(t0, t1, df, iteration):
     km_min = km.min()
     km_max = km.max()
 
-    fig = plt.figure()
+    fig, ax = plt.subplots()
+    ax.set_ylim(ymin=price.min() - 1000, ymax=price.max() + 1000)
 
     plt.style.use('dark_background')
     nbr_point_tracer = 2
@@ -42,8 +46,8 @@ def save_fig(t0, t1, df, iteration):
     plt.scatter(km, price)
     
     # add some Title to the display
-    model = np.polyfit(km, price, 1)
-    plt.plot(linear, linear * model[0] + model[1], label='polyfit', ls='--', c='g')
+    # model = np.polyfit(km, price, 1)
+    # plt.plot(linear, linear * model[0] + model[1], label='polyfit', ls='--', c='g')
     plt.xlabel('km')
     plt.ylabel('price')
     plt.legend()
