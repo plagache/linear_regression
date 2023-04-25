@@ -2,6 +2,13 @@
 all:
 	python3 -m pip install -r requirement.txt
 
+train:
+	git restore theta.csv
+	./linear_regression.py
+
+predict:
+	./predict.py
+
 # clean only source
 clean:
 
