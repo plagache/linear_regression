@@ -1,51 +1,30 @@
 #!/usr/bin/python3
 
-from visual import display
-from tools import import_thetas, estimate_price
-import pandas as pd
-
-def get_normalized_list(values, min, max):
-    return [get_normalized_value(x, min, max) for x in values]
-
-def get_denormalized_list(values, min, max):
-    return [get_denormalized_value(x, min, max) for x in values]
-
-def get_normalized_value(value, min, max):
-    return (value - min) / (max - min)
-
-def get_denormalized_value(value, min, max):
-    return value * (max - min) + min
-
-def save_thetas(theta_0, theta_1):
-    f = open("theta.csv", "a+")
-    f.write("%f, %f\n" % (theta_0, theta_1))
-    f.close()
+from visual import display, save_fig
+from tools import import_data, import_thetas, estimate_price, get_normalized_list, get_denormalized_value, save_thetas
+import imageio
 
 # Data import
-data = pd.read_csv('data.csv')
-df = pd.DataFrame(data)
+df, kms, prices = import_data()
 
-kms = df["km"]
 km_min = kms.min()
 km_max = kms.max()
 
-prices = df["price"]
 price_max = prices.max()
 price_min = prices.min()
 
-df["normalized_price"] = get_normalized_value(prices.tolist(), price_min, price_max)
-df["normalized_km"] = get_normalized_value(kms.tolist(), km_min, km_max)
-norme_price = df["normalized_price"]
-# df["renormalized_price"] = get_denormalized_list(norme_price.tolist(), price_min, price_max)
-norme_km = df["normalized_km"]
-# df["renormalized_km"] = get_denormalized_list(norme_km.tolist(), km_min, km_max)
-n_km_min = norme_km.min()
-n_km_max = norme_km.max()
+df["normalized_price"] = get_normalized_list(prices.tolist(), price_min, price_max)
+n_prices = df["normalized_price"]
+
+df["normalized_km"] = get_normalized_list(kms.tolist(), km_min, km_max)
+n_kms = df["normalized_km"]
+
+n_km_min = n_kms.min()
+n_km_max = n_kms.max()
 
 sample_size = len(kms.values.tolist())
 
 theta_0, theta_1 = import_thetas()
-# theta_0 = get_normalized_value(theta_0, price_min, price_max)
 
 # Denormalize thetas
 def denormalize_thetas(t0, t1):
@@ -57,7 +36,7 @@ def denormalize_thetas(t0, t1):
     y0 = prices.values[0]
 
     # Corresponding normalized value for kms
-    x0n, x1n = norme_km.values[0], norme_km.values[1]
+    x0n, x1n = n_kms.values[0], n_kms.values[1]
 
     # Corresponding normalized value for price using the normalized parameters
     y0n, y1n = estimate_price(x0n, t0, t1), estimate_price(x1n, t0, t1)
@@ -71,6 +50,8 @@ def denormalize_thetas(t0, t1):
 
     return dtheta_0, dtheta_1
 
+frames = []
+
 # Perform linear reg a certain number (range)
 for i in range(0, 100):
 
@@ -78,7 +59,7 @@ for i in range(0, 100):
     dt0 = 0
     dt1 = 0
 
-    for km, price in zip(norme_km, norme_price):
+    for km, price in zip(n_kms, n_prices):
         estimated_price = estimate_price(km, theta_0, theta_1)
         dt0 += estimated_price - price
         dt1 += (estimated_price - price) * km
@@ -88,8 +69,15 @@ for i in range(0, 100):
 
     dtheta0, dtheta1 = denormalize_thetas(theta_0, theta_1)
     save_thetas(dtheta0, dtheta1)
+    save_fig(dtheta0, dtheta1, df, i)
 
-display(theta_0, theta_1, norme_km, norme_price, n_km_min, n_km_max)
+    image = imageio.v2.imread(f'./img/img_{i}.png')
+    frames.append(image)
+
+
+imageio.mimsave('./example.gif', frames, duration = 200, loop = 1)
+
+display(theta_0, theta_1, n_kms, n_prices, n_km_min, n_km_max)
 
 nt0, nt1 = denormalize_thetas(theta_0, theta_1)
 
