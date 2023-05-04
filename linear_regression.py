@@ -60,9 +60,9 @@ for i in range(0, 100):
     dt1 = 0
 
     for km, price in zip(n_kms, n_prices):
-        estimated_price = estimate_price(km, theta_0, theta_1)
-        dt0 += estimated_price - price
-        dt1 += (estimated_price - price) * km
+        price_diff = estimate_price(km, theta_0, theta_1) - price
+        dt0 += price_diff
+        dt1 += price_diff * km
 
     theta_0 -= learning_rate * dt0 / sample_size
     theta_1 -= learning_rate * dt1 / sample_size
