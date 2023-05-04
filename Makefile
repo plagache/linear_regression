@@ -2,11 +2,22 @@
 all:
 	python3 -m pip install -r requirement.txt
 
-# clean only source
+# clean data
 clean:
+	rm -rf theta.csv
+	cp base_theta.csv theta.csv
 
 # clean also Binary
-fclean:
+fclean: clean
+
+visual:
+	python3 graph.py
+
+train:
+	python3 training.py
+
+predict:
+	python3 predict.py
 
 re:
 	$(MAKE) fclean
@@ -15,5 +26,5 @@ re:
 FORCE:
 
 .PHONY:
-	all clean fclean re FORCE
+	all clean fclean re FORCE training visual
 .SILENT:
