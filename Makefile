@@ -13,7 +13,7 @@ fclean: clean
 visual:
 	python3 graph.py
 
-train:
+train: clean
 	python3 training.py
 
 predict:
