@@ -4,10 +4,7 @@ all:
 
 # clean data
 clean:
-	rm -rf training_thetas.csv
-	rm -rf thetas.csv
-	cp clean_thetas.csv thetas.csv
-	cp clean_thetas.csv training_thetas.csv
+	git restore thetas.csv
 
 # clean also Binary
 fclean: clean

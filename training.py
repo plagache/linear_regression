@@ -31,14 +31,6 @@ y_max = y_values.max()
 # print("\nY max:", y_max)
 
 
-def save_normalized_thetas(theta_0, theta_1):
-    # print(f'\nSaved theta0 : {theta_0}')
-    # print(f'\nSaved theta1 : {theta_1}')
-    f = open("training_thetas.csv", "a+")
-    f.write("%f, %f\n" % (theta_0, theta_1))
-    f.close()
-
-
 def get_normalised_list(given_list, min, max):
     normalized_list = []
     for index, (element) in enumerate(given_list, start = 0):
@@ -84,27 +76,32 @@ denormalized_matrix = denormalization(normalize_matrix)
 # print("\nDenormalized Matrix : ----------\n", denormalized_matrix)
 
 
-def denormalization_theta():
-
-    normalized_thetas = pandas.read_csv('training_thetas.csv')
-    normalized_thetas_frame = pandas.DataFrame(normalized_thetas)
-    normalized_theta_0 = normalized_thetas_frame.loc[normalized_thetas_frame.index[-1], 'theta0']
-    normalized_theta_1 = normalized_thetas_frame.loc[normalized_thetas_frame.index[-1], 'theta1']
+def denormalization_theta(normalized_theta_0, normalized_theta_1):
 
     y_mean = (1 / data_set_size) * sum(y_values)
     x_mean = (1 / data_set_size) * sum(x_values)
+
     y_range = y_max - y_min
     x_range = x_max - x_min
 
-    theta_0 = (normalized_theta_0 * y_range / x_range + y_mean) - (normalized_theta_1 * x_mean * y_range / x_range)
-    # print("\ntheta_0 = (normalized_theta_0 * y_range / x_range + y_mean) - (normalized_theta_1 * x_mean * y_range / x_range)")
-    # print(f"\ntheta_0 = ({normalized_theta_0} * {y_range} / {x_range} + {y_mean}) - ({normalized_theta_1} * {x_mean} * {y_range} / {x_range})")
+    range_ratio = y_range / x_range
+    print("\nrange ratio =", range_ratio)
+
+    theta_1 = normalized_theta_1 * range_ratio
+    print("\ntheta_1 = ", theta_1)
+
+
+    part_theta_0 = (normalized_theta_0 * range_ratio + y_mean)
+    print ("\nPart theta_0 = ", part_theta_0)
+    part_theta_1 = (normalized_theta_1 * x_mean * range_ratio)
+    print ("\nPart theta_1 = ", part_theta_1)
+    theta_0 = (normalized_theta_0 * range_ratio + y_mean) - (normalized_theta_1 * range_ratio * x_mean)
+    print("\ntheta_0 = ", theta_0)
+
+    print("\ntheta_0 = (normalized_theta_0 * range_ratio + y_mean) - (normalized_theta_1 * x_mean * range_ratio)")
+    print(f"\ntheta_0 = ({normalized_theta_0} * {range_ratio} + {y_mean}) - ({normalized_theta_1} * {x_mean} * {range_ratio})")
     # print("\ntheta_0 = ", theta_0)
 
-    theta_1 = normalized_theta_1 * y_range / x_range
-    # print("\ntheta_1 = normalized_theta_1 * y_range / x_range")
-    # print(f"\ntheta_1 = {normalized_theta_1} * {y_range} / {x_range}")
-    # print("\ntheta_1 = ", theta_1)
 
     return({"theta 0":theta_0,"theta 1": theta_1})
 
@@ -117,50 +114,55 @@ def save_thetas(theta_0, theta_1):
     f.close()
 
 
-total = 1000;
 
-with alive_bar(total, title="[ Training ] -") as bar:
-    for i in range(0, total):
+def gradient_descent():
+
+    total = 1000;
+
+    with alive_bar(total, title="[ Training ] -") as bar:
+        for i in range(0, total):
 
 
-        learning_rate = 0.2
+            learning_rate = 0.2
 
-        sum_loss_y = 0
-        sum_loss_x = 0
+            sum_loss_y = 0
+            sum_loss_x = 0
 
-        normalized_thetas = pandas.read_csv('training_thetas.csv')
-        normalized_thetas_frame = pandas.DataFrame(normalized_thetas)
-        normalized_theta_0 = normalized_thetas_frame.loc[normalized_thetas_frame.index[-1], 'theta0']
-        normalized_theta_1 = normalized_thetas_frame.loc[normalized_thetas_frame.index[-1], "theta1"]
+            normalized_thetas = pandas.read_csv('training_thetas.csv')
+            normalized_thetas_frame = pandas.DataFrame(normalized_thetas)
+            normalized_theta_0 = normalized_thetas_frame.loc[normalized_thetas_frame.index[-1], 'theta0']
+            normalized_theta_1 = normalized_thetas_frame.loc[normalized_thetas_frame.index[-1], "theta1"]
 
-        new_theta_0 = normalized_theta_0
-        new_theta_1 = normalized_theta_1
+            new_theta_0 = normalized_theta_0
+            new_theta_1 = normalized_theta_1
 
-        for x, y in zip(xs, ys):
+            for x, y in zip(xs, ys):
 
-            estimate = linear_function(normalized_theta_1, normalized_theta_0, float(x))
+                estimate = linear_function(normalized_theta_1, normalized_theta_0, float(x))
 
-            # loss function represent the error of our model
-            # and is the difference between the estimation of our model and the actual data
-            loss_y = estimate - y
-            loss_x = (estimate - y) * x
+                # loss function represent the error of our model
+                # and is the difference between the estimation of our model and the actual data
+                loss_y = estimate - y
+                loss_x = (estimate - y) * x
 
-            sum_loss_y = sum_loss_y + loss_y
-            sum_loss_x = sum_loss_x + loss_x
+                sum_loss_y = sum_loss_y + loss_y
+                sum_loss_x = sum_loss_x + loss_x
 
-        # cost function is the average loss for the entire training data_set
-        gradient_theta_0 = sum_loss_y * (1 / data_set_size)
-        gradient_theta_1 = sum_loss_x * (1 / data_set_size)
+            # cost function is the average loss for the entire training data_set
+            gradient_theta_0 = sum_loss_y * (1 / data_set_size)
+            gradient_theta_1 = sum_loss_x * (1 / data_set_size)
 
-        # this update the theta
-        new_theta_0 -= learning_rate * gradient_theta_0
-        new_theta_1 -= learning_rate * gradient_theta_1
-        save_normalized_thetas(new_theta_0, new_theta_1)
+            # this update the theta
+            new_theta_0 -= learning_rate * gradient_theta_0
+            new_theta_1 -= learning_rate * gradient_theta_1
+            # save_normalized_thetas(new_theta_0, new_theta_1)
 
-        thetas = denormalization_theta()
-        save_thetas(thetas["theta 0"], thetas["theta 1"])
+            thetas = denormalization_theta(new_theta_0, new_theta_1)
+            save_thetas(thetas["theta 0"], thetas["theta 1"])
 
-        bar()
+            bar()
 
+
+gradient_descent()
 # thetas = denormalization_theta()
 # save_thetas(thetas["theta 0"], thetas["theta 1"])
