@@ -95,8 +95,14 @@ def denormalization_theta():
     x_range = x_max - x_min
 
     theta_0 = (normalized_theta_0 * y_range / x_range + y_mean) - (normalized_theta_1 * x_mean * y_range / x_range)
+    # print("\ntheta_0 = (normalized_theta_0 * y_range / x_range + y_mean) - (normalized_theta_1 * x_mean * y_range / x_range)")
+    # print(f"\ntheta_0 = ({normalized_theta_0} * {y_range} / {x_range} + {y_mean}) - ({normalized_theta_1} * {x_mean} * {y_range} / {x_range})")
+    # print("\ntheta_0 = ", theta_0)
 
-    theta_1 = normalized_theta_1 * (y_max - y_min) / (x_max - x_min)
+    theta_1 = normalized_theta_1 * y_range / x_range
+    # print("\ntheta_1 = normalized_theta_1 * y_range / x_range")
+    # print(f"\ntheta_1 = {normalized_theta_1} * {y_range} / {x_range}")
+    # print("\ntheta_1 = ", theta_1)
 
     return({"theta 0":theta_0,"theta 1": theta_1})
 
