@@ -5,6 +5,8 @@ import pandas
 from linear_function import linear_function
 # from graph import ploting
 
+from alive_progress import alive_bar
+import time
 
 data = pandas.read_csv('data.csv')
 
@@ -115,45 +117,50 @@ def save_thetas(theta_0, theta_1):
     f.close()
 
 
-for i in range(0, 1000):
+total = 1000;
+
+with alive_bar(total, title="[ Training ] -") as bar:
+    for i in range(0, total):
 
 
-    learning_rate = 0.2
+        learning_rate = 0.2
 
-    sum_loss_y = 0
-    sum_loss_x = 0
+        sum_loss_y = 0
+        sum_loss_x = 0
 
-    normalized_thetas = pandas.read_csv('training_thetas.csv')
-    normalized_thetas_frame = pandas.DataFrame(normalized_thetas)
-    normalized_theta_0 = normalized_thetas_frame.loc[normalized_thetas_frame.index[-1], 'theta0']
-    normalized_theta_1 = normalized_thetas_frame.loc[normalized_thetas_frame.index[-1], "theta1"]
+        normalized_thetas = pandas.read_csv('training_thetas.csv')
+        normalized_thetas_frame = pandas.DataFrame(normalized_thetas)
+        normalized_theta_0 = normalized_thetas_frame.loc[normalized_thetas_frame.index[-1], 'theta0']
+        normalized_theta_1 = normalized_thetas_frame.loc[normalized_thetas_frame.index[-1], "theta1"]
 
-    new_theta_0 = normalized_theta_0
-    new_theta_1 = normalized_theta_1
+        new_theta_0 = normalized_theta_0
+        new_theta_1 = normalized_theta_1
 
-    for x, y in zip(xs, ys):
+        for x, y in zip(xs, ys):
 
-        estimate = linear_function(normalized_theta_1, normalized_theta_0, float(x))
+            estimate = linear_function(normalized_theta_1, normalized_theta_0, float(x))
 
-        # loss function represent the error of our model
-        # and is the difference between the estimation of our model and the actual data
-        loss_y = estimate - y
-        loss_x = (estimate - y) * x
+            # loss function represent the error of our model
+            # and is the difference between the estimation of our model and the actual data
+            loss_y = estimate - y
+            loss_x = (estimate - y) * x
 
-        sum_loss_y = sum_loss_y + loss_y
-        sum_loss_x = sum_loss_x + loss_x
+            sum_loss_y = sum_loss_y + loss_y
+            sum_loss_x = sum_loss_x + loss_x
 
-    # cost function is the average loss for the entire training data_set
-    gradient_theta_0 = sum_loss_y * (1 / data_set_size)
-    gradient_theta_1 = sum_loss_x * (1 / data_set_size)
+        # cost function is the average loss for the entire training data_set
+        gradient_theta_0 = sum_loss_y * (1 / data_set_size)
+        gradient_theta_1 = sum_loss_x * (1 / data_set_size)
 
-    # this update the theta
-    new_theta_0 -= learning_rate * gradient_theta_0
-    new_theta_1 -= learning_rate * gradient_theta_1
-    save_normalized_thetas(new_theta_0, new_theta_1)
+        # this update the theta
+        new_theta_0 -= learning_rate * gradient_theta_0
+        new_theta_1 -= learning_rate * gradient_theta_1
+        save_normalized_thetas(new_theta_0, new_theta_1)
 
-    thetas = denormalization_theta()
-    save_thetas(thetas["theta 0"], thetas["theta 1"])
+        thetas = denormalization_theta()
+        save_thetas(thetas["theta 0"], thetas["theta 1"])
+
+        bar()
 
 # thetas = denormalization_theta()
 # save_thetas(thetas["theta 0"], thetas["theta 1"])
