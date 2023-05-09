@@ -25,16 +25,16 @@ print( "\nkm_max : ", km_max)
 price_max = 0
 price_min = 0
 
-theta = pandas.read_csv('theta.csv')
-theta_frame = pandas.DataFrame(theta)
-theta_frame_index = theta_frame.index
-print("\n",theta_frame)
+thetas = pandas.read_csv('thetas.csv')
+thetas_frame = pandas.DataFrame(thetas)
+theta_frame_index = thetas_frame.index
+print("\n",thetas_frame)
 print("\n",theta_frame_index)
 
-theta_0 = theta_frame.loc[theta_frame.index[-1], 'theta0']
+theta_0 = thetas_frame.loc[thetas_frame.index[-1], 'theta0']
 print(f'\ntheta0 : {theta_0}')
 
-theta_1 = theta_frame.loc[theta_frame.index[-1], "theta1"]
+theta_1 = thetas_frame.loc[thetas_frame.index[-1], "theta1"]
 print(f'\ntheta1 : {theta_1}')
 
 def ploting(theta_0, theta_1, xs, ys, x_y_min, x_y_max):
@@ -62,4 +62,4 @@ def ploting(theta_0, theta_1, xs, ys, x_y_min, x_y_max):
     graph.legend()
     graph.show()
 
-# ploting(theta_0, theta_1, kilometers, prices, km_min, km_max)
+ploting(theta_0, theta_1, kilometers, prices, km_min, km_max)

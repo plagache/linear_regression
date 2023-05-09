@@ -4,8 +4,10 @@ all:
 
 # clean data
 clean:
-	rm -rf theta.csv
-	cp base_theta.csv theta.csv
+	rm -rf training_thetas.csv
+	rm -rf thetas.csv
+	cp clean_thetas.csv thetas.csv
+	cp clean_thetas.csv training_thetas.csv
 
 # clean also Binary
 fclean: clean
