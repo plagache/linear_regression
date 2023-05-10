@@ -120,8 +120,10 @@ def get_thetas():
 
 def gradient_descent(theta_0, theta_1):
 
-    total = 2000;
-    learning_rate = 0.2
+    # total = 2000;
+    # learning_rate = 0.2
+    total = 100;
+    learning_rate = 1
 
     for i in range(0, total):
 
