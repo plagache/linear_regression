@@ -40,9 +40,9 @@ def ploting(theta_0, theta_1, xs, ys, x_min, x_max, name):
     # graph.plot()
     graph.scatter(xs, ys)
     
-    linear = math.linspace(x_min, x_max, nombre_point_tracer)
-    model = math.polyfit(x_values, y_values, 1)
-    graph.plot(linear, linear * model[0] + model[1], "r:.", label='Polyfit')
+    # linear = math.linspace(x_min, x_max, nombre_point_tracer)
+    # model = math.polyfit(x_values, y_values, 1)
+    # graph.plot(linear, linear * model[0] + model[1], "r:.", label='Polyfit')
 
     graph.xlabel('km')
     graph.ylabel('price')
@@ -58,10 +58,18 @@ def ploting(theta_0, theta_1, xs, ys, x_min, x_max, name):
 # ploting_example()
 
 filenames = []
-for index in range(0,thetas_size):
 
-    theta_0 = thetas_frame["theta0"].values[index]
-    theta_1 = thetas_frame["theta1"].values[index]
+total_image = 240
+
+for index in range(1, total_image):
+
+    # print(thetas_size)
+    # print(index)
+    index_pondere = int(thetas_size / total_image)
+    # print(int(index_pondere))
+    # print(index * index_pondere)
+    theta_0 = thetas_frame["theta0"].values[index * index_pondere]
+    theta_1 = thetas_frame["theta1"].values[index * index_pondere]
     ploting(theta_0, theta_1, x_values, y_values, x_min, x_max, "Last trained Thetas")
     
     # create file name and append it to a list
@@ -75,7 +83,7 @@ for index in range(0,thetas_size):
     # build gif
 with imageio.get_writer('Training.gif', mode='I') as writer:
     for filename in filenames:
-        image = imageio.imread(filename)
+        image = imageio.v3.imread(filename)
         writer.append_data(image)
     writer.close
         
@@ -84,3 +92,4 @@ for filename in set(filenames):
     os.remove(filename)
 
 ploting(theta_0, theta_1, x_values, y_values, x_min, x_max, "Last trained Thetas")
+graph.show()
