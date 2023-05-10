@@ -1,13 +1,15 @@
 #! /usr/bin/python3
 
-import pandas  as pd
+import pandas
 from linear_function import linear_function
 
 
-theta = pd.read_csv('theta.csv')
-theta_f = pd.DataFrame(theta)
-theta_0 = theta_f.loc[theta_f.index[-1], 'theta0']
-theta_1 = theta_f.loc[theta_f.index[-1], 'theta1']
+thetas = pandas.read_csv('thetas.csv')
+thetas_frame = pandas.DataFrame(thetas)
+theta_0 = thetas_frame["theta0"].values[-1]
+theta_1 = thetas_frame["theta1"].values[-1]
+
+
 print("Theta 0 = ", theta_0, "\nTheta 1 = ", theta_1, sep='', end='\n')
 
 

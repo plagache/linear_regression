@@ -17,9 +17,9 @@ x_max = x_values.max()
 
 thetas = pandas.read_csv('thetas.csv')
 thetas_frame = pandas.DataFrame(thetas)
-theta_frame_index = thetas_frame.index
-theta_0 = thetas_frame.loc[thetas_frame.index[-1], 'theta0']
-theta_1 = thetas_frame.loc[thetas_frame.index[-1], "theta1"]
+theta_0 = thetas_frame["theta0"].values[-1]
+theta_1 = thetas_frame["theta1"].values[-1]
+thetas_size = theta_0.count()
 
 
 def ploting(theta_0, theta_1, xs, ys, x_min, x_max, name):
@@ -53,4 +53,4 @@ def ploting(theta_0, theta_1, xs, ys, x_min, x_max, name):
 # ploting_example()
 
 
-ploting(theta_0, theta_1, x_values, y_values, x_min, x_max, "My linear")
+ploting(theta_0, theta_1, x_values, y_values, x_min, x_max, "Last trained Thetas")

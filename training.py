@@ -1,12 +1,8 @@
 #!/usr/bin/python3
 
 import pandas
-# import numpy as math
 from linear_function import linear_function
-# from graph import ploting
 
-from alive_progress import alive_bar
-# import time
 
 data = pandas.read_csv('data.csv')
 
@@ -78,8 +74,10 @@ denormalized_matrix = denormalization(normalize_matrix)
 
 def denormalization_thetas(normalized_theta_0, normalized_theta_1):
 
-    y_mean = (1 / data_set_size) * sum(y_values)
-    x_mean = (1 / data_set_size) * sum(x_values)
+    y_mean = y_values.sum() / data_set_size
+    # y_mean = (1 / data_set_size) * sum(y_values)
+    # x_mean = (1 / data_set_size) * sum(x_values)
+    x_mean = x_values.sum() / data_set_size
 
     y_range = y_max - y_min
     x_range = x_max - x_min
@@ -90,22 +88,17 @@ def denormalization_thetas(normalized_theta_0, normalized_theta_1):
     d_theta_1 = normalized_theta_1 * range_ratio
     # print("\ntheta_1 = ", theta_1)
 
-
     # graph 1 rapport de la normalized distance + la moyenne
     # part_theta_0 = (normalized_theta_0 * range_ratio + y_mean)
     # print ("\nPart theta_0 = ", part_theta_0)
     # graph 2 rapport de la normalized distance + la moyenne
-    # part_theta_1 = (normalized_theta_1 * x_mean * range_ratio)
+    # part_theta_1 = d_theta_1 * x_mean
     # print ("\nPart theta_1 = ", part_theta_1)
-    d_theta_0 = (normalized_theta_0 * range_ratio + y_mean) - (normalized_theta_1 * range_ratio * x_mean)
-    # print("\ntheta_0 = ", theta_0)
-    #
-    # print("\ntheta_0 = (normalized_theta_0 * range_ratio + y_mean) - (normalized_theta_1 * x_mean * range_ratio)")
-    # print(f"\ntheta_0 = ({normalized_theta_0} * {range_ratio} + {y_mean}) - ({normalized_theta_1} * {x_mean} * {range_ratio})")
-    # print("\ntheta_0 = ", theta_0)
+
+    d_theta_0 = (normalized_theta_0 * range_ratio + y_mean) - (d_theta_1 * x_mean)
+    # print("\ntheta_0 = ", d_theta_0)
 
 
-    # return({"theta 0":theta_0,"theta 1": theta_1})
     return d_theta_0, d_theta_1
 
 
@@ -120,15 +113,15 @@ def save_thetas(theta_0, theta_1):
 def get_thetas():
     thetas = pandas.read_csv('thetas.csv')
     thetas_frame = pandas.DataFrame(thetas)
-    theta_0 = thetas_frame.loc[thetas_frame.index[-1], 'theta0']
-    theta_1 = thetas_frame.loc[thetas_frame.index[-1], "theta1"]
+    theta_0 = thetas_frame["theta0"].values[-1]
+    theta_1 = thetas_frame["theta1"].values[-1]
     return theta_0, theta_1
 
 
 def gradient_descent(theta_0, theta_1):
 
-    total = 600;
-    learning_rate = 0.3
+    total = 2000;
+    learning_rate = 0.2
 
     for i in range(0, total):
 
@@ -155,12 +148,15 @@ def gradient_descent(theta_0, theta_1):
         theta_0 -= learning_rate * gradient_theta_0
         theta_1 -= learning_rate * gradient_theta_1
 
-        # dt0, dt1 = denormalization_thetas(theta_0, theta_1)
+        dt0, dt1 = denormalization_thetas(theta_0, theta_1)
+        save_thetas(dt0, dt1)
 
     return denormalization_thetas(theta_0, theta_1)
 
 
 base_theta_0, base_theta_1 = get_thetas()
+
 dt0, dt1 = gradient_descent(base_theta_0, base_theta_1)
+
 print("\nlast denormalized theta 0 =", dt0)
 print("\nlast denormalized theta 1 =", dt1)
