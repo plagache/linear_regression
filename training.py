@@ -75,12 +75,14 @@ denormalized_matrix = denormalization(normalize_matrix)
 def denormalization_thetas(normalized_theta_0, normalized_theta_1):
 
     y_mean = y_values.sum() / data_set_size
-    # y_mean = (1 / data_set_size) * sum(y_values)
-    # x_mean = (1 / data_set_size) * sum(x_values)
+    # print("\nmoyenne y =", y_mean)
     x_mean = x_values.sum() / data_set_size
+    # print("\nmoyenne x =", x_mean)
 
     y_range = y_max - y_min
+    # print("\nrange y =", y_range)
     x_range = x_max - x_min
+    # print("\nrange x =", x_range)
 
     range_ratio = y_range / x_range
     # print("\nrange ratio =", range_ratio)

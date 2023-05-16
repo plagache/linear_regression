@@ -77,8 +77,7 @@ def polyfit_example():
     ploting_linear_regression(model[1], model[0], x_min, x_max, "Polyfit Example", "r:.")
 
 
-def create_animated_gif(theta_0, theta_1):
-
+def create_path():
     directory = "png"
     # print(directory)
 
@@ -97,15 +96,20 @@ def create_animated_gif(theta_0, theta_1):
     if (isExist == False):
         os.mkdir(path)
 
-    frames = []
+    return(path)
 
-    total_image = 120
 
-    for index in range(1, total_image):
+def create_pngs(theta_0, theta_1):
+
+    images = []
+
+    total_images = 120
+
+    for index in range(1, total_images):
 
         # print(thetas_size)
         # print(index)
-        index_pondere = int(thetas_size / total_image)
+        index_pondere = int(thetas_size / total_images)
         # print(int(index_pondere))
         # print(index * index_pondere)
         theta_0 = thetas_frame["theta0"].values[index * index_pondere]
@@ -115,7 +119,7 @@ def create_animated_gif(theta_0, theta_1):
 
         # create file name and append it to a list
         filename = f'png/{index}.png'
-        frames.append(filename)
+        images.append(filename)
 
         # save frame
         graph.savefig(filename)
@@ -127,26 +131,27 @@ def create_animated_gif(theta_0, theta_1):
     ploting_linear_regression(theta_0, theta_1, x_min, x_max, "My Linear Regression", "g")
     polyfit_example()
     # create file name and append it to a list
-    filename = f'png/{total_image + 1}.png'
-    frames.append(filename)
+    filename = f'png/{total_images + 1}.png'
+    images.append(filename)
 
     # save frame
     graph.legend()
     graph.savefig(filename)
     graph.close()
+    return images
+
+def create_animated_gif(theta_0, theta_1):
+
+    create_path()
+
+    images = create_pngs(theta_0, theta_1)
+
+    frames = list()
+    for image in images:
+        frames.append(imageio.v3.imread(image))
 
 
-        # build gif
-    with imageio.get_writer('training.gif', mode='I') as writer:
-        for filename in frames:
-            image = imageio.v3.imread(filename)
-            writer.append_data(image)
-        writer.close
-
-    # Remove files
-    for filename in set(frames):
-        os.remove(filename)
-    os.rmdir(path)
+    imageio.mimsave("training.gif", frames, duration=50)
 
 
 

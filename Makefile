@@ -16,7 +16,7 @@ graph:
 	# python3 graph.py -p
 	# python3 graph.py -l
 	# python3 graph.py -g
-	# python3 graph.py -pl
+	python3 graph.py -pl
 	# python3 graph.py -plg
 
 train: clean
