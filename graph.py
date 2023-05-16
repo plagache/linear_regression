@@ -3,11 +3,33 @@
 import matplotlib.pyplot as graph
 import pandas
 import numpy as math
-# from training import denormalized_value
-from linear_function import linear_function
 import matplotx
 import os
 import imageio
+import argparse
+
+
+parser = argparse.ArgumentParser(
+                    prog='Graph',
+                    description='Plot different graph',
+                    exit_on_error=False)
+
+parser.add_argument('-p', '--polyfit',
+                    help='Polyfit example',
+                    action='store_true',
+                    required=False)
+
+parser.add_argument('-l', '--linear',
+                    help='My linear function',
+                    action='store_true',
+                    required=False)
+
+parser.add_argument('-g', '--gif',
+                    help='Create Animated Gif',
+                    action='store_true',
+                    required=False)
+
+args = parser.parse_args()
 
 
 data = pandas.read_csv('data.csv')
@@ -25,71 +47,125 @@ theta_1 = thetas_frame["theta1"].values[-1]
 thetas_size = thetas_frame["theta0"].count()
 
 
-def ploting(theta_0, theta_1, xs, ys, x_min, x_max, name):
-    
-    graph.style.use(matplotx.styles.dracula)
+def base_graph(xs, ys):
+
+    # graph.style.use(matplotx.styles.dracula)
     # graph.style.use(matplotx.styles.onedark)
-    # graph.style.use(matplotx.styles.gruvbox["dark"])
-    nombre_point_tracer = 10
-    
-    # Prepare Data to be Display data on matplotlib
-    x = math.linspace(x_min, x_max, nombre_point_tracer)
-    y = x * theta_1 + theta_0
-    # Actually display the Data
-    graph.plot(x, y, "g", label=name)
-    # graph.plot()
-    graph.scatter(xs, ys)
-    
-    # linear = math.linspace(x_min, x_max, nombre_point_tracer)
-    # model = math.polyfit(x_values, y_values, 1)
-    # graph.plot(linear, linear * model[0] + model[1], "r:.", label='Polyfit')
+    graph.style.use(matplotx.styles.gruvbox["dark"])
 
     graph.xlabel('km')
     graph.ylabel('price')
-    graph.legend()
-    # graph.show()
+    graph.scatter(xs, ys)
+    # graph.legend()
 
 
-# def ploting_example():
-#     model = math.polyfit(x_values, y_values, 1)
-#     ploting(model[1], model[0], x_values, y_values, x_min, x_max, "polyfit example")
-#
-#
-# ploting_example()
+nombre_point_tracer = 2
 
-filenames = []
 
-total_image = 240
+def ploting_linear_regression(theta_0, theta_1, x_min, x_max, name, format):
 
-for index in range(1, total_image):
+    # Prepare Data to be display on matplotlib
+    x = math.linspace(x_min, x_max, nombre_point_tracer)
+    y = x * theta_1 + theta_0
 
-    # print(thetas_size)
-    # print(index)
-    index_pondere = int(thetas_size / total_image)
-    # print(int(index_pondere))
-    # print(index * index_pondere)
-    theta_0 = thetas_frame["theta0"].values[index * index_pondere]
-    theta_1 = thetas_frame["theta1"].values[index * index_pondere]
-    ploting(theta_0, theta_1, x_values, y_values, x_min, x_max, "Last trained Thetas")
-    
+    # plot the linear regression
+    graph.plot(x, y, format, label=name)
+
+
+def polyfit_example():
+    model = math.polyfit(x_values, y_values, 1)
+    ploting_linear_regression(model[1], model[0], x_min, x_max, "Polyfit Example", "r:.")
+
+
+def create_animated_gif(theta_0, theta_1):
+
+    directory = "png"
+    # print(directory)
+
+    current_directory = os.getcwd()
+    # print(current_directory)
+
+    # Path
+    path = os.path.join(current_directory, directory)
+    # print(path)
+
+    # Does Path already exist ?
+    isExist = os.path.exists(path)
+    # print(isExist)
+
+    # Create directory
+    if (isExist == False):
+        os.mkdir(path)
+
+    frames = []
+
+    total_image = 120
+
+    for index in range(1, total_image):
+
+        # print(thetas_size)
+        # print(index)
+        index_pondere = int(thetas_size / total_image)
+        # print(int(index_pondere))
+        # print(index * index_pondere)
+        theta_0 = thetas_frame["theta0"].values[index * index_pondere]
+        theta_1 = thetas_frame["theta1"].values[index * index_pondere]
+        base_graph(x_values, y_values)
+        ploting_linear_regression(theta_0, theta_1, x_min, x_max, "My Linear Regression", "g")
+
+        # create file name and append it to a list
+        filename = f'png/{index}.png'
+        frames.append(filename)
+
+        # save frame
+        graph.savefig(filename)
+        graph.close()
+
+
+    # Last frame
+    base_graph(x_values, y_values)
+    ploting_linear_regression(theta_0, theta_1, x_min, x_max, "My Linear Regression", "g")
+    polyfit_example()
     # create file name and append it to a list
-    filename = f'png/{index}.png'
-    filenames.append(filename)
-    
+    filename = f'png/{total_image + 1}.png'
+    frames.append(filename)
+
     # save frame
+    graph.legend()
     graph.savefig(filename)
     graph.close()
 
-    # build gif
-with imageio.get_writer('Training.gif', mode='I') as writer:
-    for filename in filenames:
-        image = imageio.v3.imread(filename)
-        writer.append_data(image)
-    writer.close
-        
-# Remove files
-for filename in set(filenames):
-    os.remove(filename)
 
-ploting(theta_0, theta_1, x_values, y_values, x_min, x_max, "Last trained Thetas")
+        # build gif
+    with imageio.get_writer('training.gif', mode='I') as writer:
+        for filename in frames:
+            image = imageio.v3.imread(filename)
+            writer.append_data(image)
+        writer.close
+
+    # Remove files
+    for filename in set(frames):
+        os.remove(filename)
+    os.rmdir(path)
+
+
+
+base_graph(x_values, y_values)
+
+
+if (args.linear == True):
+    ploting_linear_regression(theta_0, theta_1, x_min, x_max, "My Linear Regression", "g")
+
+
+if (args.polyfit == True):
+    polyfit_example()
+
+
+graph.legend()
+
+
+if (args.gif == True):
+    create_animated_gif(theta_0, theta_1)
+
+
 graph.show()

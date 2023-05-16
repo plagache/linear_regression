@@ -5,12 +5,19 @@ all:
 # clean data
 clean:
 	git restore thetas.csv
+	rm -rf png/
 
-# clean also Binary
+# clean also gif
 fclean: clean
+	rm -rf training.gif
 
-visual:
-	python3 graph.py
+graph:
+	# python3 graph.py
+	# python3 graph.py -p
+	# python3 graph.py -l
+	# python3 graph.py -g
+	# python3 graph.py -pl
+	# python3 graph.py -plg
 
 train: clean
 	python3 training.py
@@ -25,5 +32,5 @@ re:
 FORCE:
 
 .PHONY:
-	all clean fclean re FORCE training visual
+	all clean fclean re FORCE train graph predict
 .SILENT:
