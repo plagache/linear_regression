@@ -2,6 +2,7 @@
 
 our goal is to find a and b for the function a * x + b;
 that will match our data set;
+![Alt text](/base.png)
 
 this is the data plot with the same range of price than kilometers
 we can see that price and kilometers are on a very different scale
