@@ -23,4 +23,23 @@ on this plan we do our training, and we can use the same learning rate for both 
 we obtain thetas that are correlated with the normalize data
 ![Alt text](/readme_ressource/trained_normalize.png)
 
-from there we can can predict value with :
+then we are going to use the,
+
+distance of our data set :
+
+```
+y_range = y_max - y_min
+x_range = x_max - x_min
+```
+
+and the range ratio :
+
+```
+range_ratio = y_range / x_range
+```
+
+to denormalize our theta.
+
+this values enable us to rescale the theta to the scale of our data set.
+
+![Alt text](/readme_ressource/my_linear.png)

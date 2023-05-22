@@ -11,8 +11,10 @@ data_frame = pandas.DataFrame(data)
 # print(data_frame)
 
 x_values = data_frame["km"]
+# xs = data_frame["km"]
 
 y_values = data_frame["price"]
+# ys = data_frame["price"]
 
 data_set_size = x_values.count()
 # print( "\nData set size : ", data_set_size)
@@ -68,7 +70,7 @@ def denormalization(normalize_matrix):
     return denormalized_matrix
 
 
-denormalized_matrix = denormalization(normalize_matrix)
+# denormalized_matrix = denormalization(normalize_matrix)
 # print("\nDenormalized Matrix : ----------\n", denormalized_matrix)
 
 
@@ -88,7 +90,7 @@ def denormalization_thetas(normalized_theta_0, normalized_theta_1):
     # print("\nrange ratio =", range_ratio)
 
     d_theta_1 = normalized_theta_1 * range_ratio
-    # print("\ntheta_1 = ", theta_1)
+    # print("\ntheta_1 = ", d_theta_1)
 
     # graph 1 rapport de la normalized distance + la moyenne
     # part_theta_0 = (normalized_theta_0 * range_ratio + y_mean)
@@ -131,6 +133,7 @@ def gradient_descent(theta_0, theta_1):
 
         sum_loss_y = 0
         sum_loss_x = 0
+        sum_square = 0
 
         for x, y in zip(xs, ys):
 
@@ -141,9 +144,15 @@ def gradient_descent(theta_0, theta_1):
             loss_y = estimate - y
             loss_x = (estimate - y) * x
 
+            # sum_square = loss_y * loss_y
             sum_loss_y = sum_loss_y + loss_y
             sum_loss_x = sum_loss_x + loss_x
 
+
+        # print("\n last loss y =", loss_y)
+        # print("\nsum_square =", sum_square)
+        # cost = sum_square / (data_set_size * 2)
+        # print("\ncost =", cost)
         # cost function is the average loss for the entire training data_set
         gradient_theta_0 = sum_loss_y / data_set_size
         gradient_theta_1 = sum_loss_x / data_set_size
