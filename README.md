@@ -1,4 +1,21 @@
-# linear_regression
+# Linear Regression
+
+## Installation and dependencies
+You need python, pip, make
+```bash
+git clone https://github.com/plagache/linear_regression
+cd linear_regression
+make
+```
+
+## Usage
+```
+make train
+make predict
+make graph
+```
+
+## Explanation
 
 our goal is to find a and b for the function a * x + b;
 that will match our data set;
